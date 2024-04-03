@@ -20,7 +20,7 @@ const Login = ({ formState, setFormState, onLogin }) => {
         },
         password: {
           ...prevState.password,
-          error: !doesAccountExist ? errorMessages.invalidCredentials : "",
+          error: errorMessages.invalidCredentials,
         },
       }));
       return;
