@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Inputs } from "../constants/input";
-import ErrorBox from "../components/error.jsx";
 import { checkPassword, findUsername } from "../utils/validator.js";
+import { errorMessages } from "../constants/errormessages.jsx";
+import accounts from "../accounts.json";
+import Fields from "../components/Fields.jsx";
 
-const ACCOUNTS_ENDPOINT = "/src/accounts.json";
-const Account = ({ user, onLogout }) => {
+const Account = ({ user, setUser, onLogout }) => {
   const [formState, setFormState] = useState(
     Inputs.reduce(
       (acc, input) => ({
@@ -19,26 +20,31 @@ const Account = ({ user, onLogout }) => {
   );
   const handleUpdateDetails = (e) => {
     e.preventDefault();
-    fetch(ACCOUNTS_ENDPOINT)
-      .then((res) => res.json())
-      .then((accounts) => {
-        const username = formState.username.value;
-        const password = formState.password.value;
-        if (user === username) {
-          return; // no change
-        }
-        const isUserExists = findUsername(username, accounts);
+    const username = formState.username.value;
+    const password = formState.password.value;
+    const isUserExists = findUsername(username, accounts);
+    const usernameError =
+      user === username || !isUserExists ? "" : errorMessages.uniqueUsername;
 
-        if (isUserExists) {
-          console.log("user existing");
-        }
+    const isPasswordOK = checkPassword(password);
+    const passwordError = !isPasswordOK
+      ? errorMessages.passwordRequirements
+      : "";
 
-        const isPasswordOK = checkPassword(password);
-        if (!isPasswordOK) {
-          console.log("password failed");
-        }
-        // update accounts data
-      });
+    setFormState((prevState) => ({
+      ...prevState,
+      username: {
+        ...prevState.username,
+        error: usernameError,
+      },
+      password: {
+        ...prevState.password,
+        error: passwordError,
+      },
+    }));
+    if (!usernameError && !passwordError) {
+      setUser(username);
+    }
   };
 
   const handleChange = (value, inputValue) => {
@@ -55,29 +61,15 @@ const Account = ({ user, onLogout }) => {
     <>
       <p className="greet-message">Hi {user},</p>
       <form onSubmit={handleUpdateDetails}>
-        {Inputs.map((input) => (
-          <div className="form" key={input.value}>
-            <label className="label">{input.label}</label>
-            <input
-              type={input.type}
-              placeholder={input.placeholder}
-              onChange={(e) => handleChange(input.value, e.target.value)}
-              defaultValue={
-                input.value === "username" ? formState[input.value].value : ""
-              }
-              className={
-                !!formState[input.value].error ? "input error-field" : "input"
-              }
-            />
-            <ErrorBox message={formState[input.value].error} />
-          </div>
-        ))}
-        <button type="submit" className="btn">
-          Update Details
-        </button>
-        <button type="button" className="btn" onClick={onLogout}>
-          Logout
-        </button>
+        <Fields formState={formState} setFormState={setFormState} />
+        <div className="btn-wrapper">
+          <button type="submit" className="btn">
+            Update Details
+          </button>
+          <button type="button" className="btn logout" onClick={onLogout}>
+            Logout
+          </button>
+        </div>
       </form>
     </>
   );

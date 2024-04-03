@@ -18,7 +18,7 @@ const Home = () => {
     <>
       <Container>
         {!!user ? (
-          <Account user={user} onLogout={onLogout} />
+          <Account user={user} setUser={setUser} onLogout={onLogout} />
         ) : (
           <Login onLogin={onLogin} />
         )}
