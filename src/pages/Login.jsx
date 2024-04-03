@@ -1,10 +1,9 @@
 import { errorMessages } from "../constants/errormessages";
 import { findUser, findUsername } from "../utils/validator.js";
-import accounts from "../accounts.json";
 import Fields from "../components/Fields.jsx";
 import Button from "../components/Button.jsx";
 
-const Login = ({ formState, setFormState, onLogin }) => {
+const Login = ({ formState, setFormState, onLogin, accounts }) => {
   const handleLogin = (e) => {
     e.preventDefault();
     const username = formState.username.value;

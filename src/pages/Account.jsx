@@ -1,10 +1,17 @@
 import { checkPassword, findUsername } from "../utils/validator.js";
 import { errorMessages } from "../constants/errormessages.jsx";
-import accounts from "../accounts.json";
 import Fields from "../components/Fields.jsx";
 import Button from "../components/Button.jsx";
 
-const Account = ({ user, setUser, formState, setFormState, onLogout }) => {
+const Account = ({
+  user,
+  setUser,
+  formState,
+  setFormState,
+  onLogout,
+  accounts,
+  setAccounts,
+}) => {
   const handleUpdateDetails = (e) => {
     e.preventDefault();
     const username = formState.username.value;
@@ -30,6 +37,18 @@ const Account = ({ user, setUser, formState, setFormState, onLogout }) => {
       },
     }));
     if (!usernameError && !passwordError) {
+      setAccounts((prevAccounts) =>
+        prevAccounts.map((account) => {
+          if (user === account.username) {
+            return {
+              ...account,
+              username,
+              password,
+            };
+          }
+          return account;
+        })
+      );
       setUser(username);
     }
   };

@@ -3,6 +3,7 @@ import Container from "../layout/container.jsx";
 import Login from "./Login.jsx";
 import Account from "./Account.jsx";
 import { Inputs } from "../constants/input.jsx";
+import data from "../accounts.json";
 
 const INITIAL_USER = null;
 
@@ -14,6 +15,7 @@ const Home = () => {
       {}
     )
   );
+  const [accounts, setAccounts] = useState(data);
   const onLogin = (user) => {
     setUser(user);
   };
@@ -30,12 +32,15 @@ const Home = () => {
             formState={formState}
             setFormState={setFormState}
             onLogout={onLogout}
+            accounts={accounts}
+            setAccounts={setAccounts}
           />
         ) : (
           <Login
             formState={formState}
             setFormState={setFormState}
             onLogin={onLogin}
+            accounts={accounts}
           />
         )}
       </Container>
