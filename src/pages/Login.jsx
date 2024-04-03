@@ -1,18 +1,10 @@
-import { Inputs } from "../constants/input";
 import { errorMessages } from "../constants/errormessages";
-import { useState } from "react";
 import { findUser, findUsername } from "../utils/validator.js";
 import accounts from "../accounts.json";
 import Fields from "../components/Fields.jsx";
+import Button from "../components/Button.jsx";
 
-const Login = ({ onLogin }) => {
-  const [formState, setFormState] = useState(
-    Inputs.reduce(
-      (acc, input) => ({ ...acc, [input.value]: { value: "", error: "" } }),
-      {}
-    )
-  );
-
+const Login = ({ formState, setFormState, onLogin }) => {
   const handleLogin = (e) => {
     e.preventDefault();
     const username = formState.username.value;
@@ -33,6 +25,19 @@ const Login = ({ onLogin }) => {
       }));
       return;
     }
+    setFormState((prevState) => ({
+      ...prevState,
+      username: {
+        ...prevState.username,
+        value: username,
+        error: "",
+      },
+      password: {
+        ...prevState.password,
+        value: "",
+        error: "",
+      },
+    }));
     onLogin(username);
   };
 
@@ -51,9 +56,7 @@ const Login = ({ onLogin }) => {
       <form onSubmit={handleLogin}>
         <Fields formState={formState} setFormState={setFormState} />
         <div className="btn-wrapper">
-          <button type="submit" className="btn">
-            Login
-          </button>
+          <Button type="submit">Login</Button>
         </div>
       </form>
     </>

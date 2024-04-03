@@ -75,7 +75,7 @@ body {
 }
 
 .error-message div:first-child {
-  margin-right: 5px;
+  margin: 0px 5px;
 }
 
 .vSpacer33 {
@@ -117,4 +117,5 @@ body {
 .btn-wrapper {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }

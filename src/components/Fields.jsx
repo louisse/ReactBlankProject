@@ -19,9 +19,7 @@ export default function Fields({ formState, setFormState }) {
         type={input.type}
         placeholder={input.placeholder}
         onChange={(e) => handleChange(input.value, e.target.value)}
-        defaultValue={
-          input.value === "username" ? formState[input.value].value : ""
-        }
+        value={formState[input.value].value}
         className={
           !!formState[input.value].error ? "input error-field" : "input"
         }

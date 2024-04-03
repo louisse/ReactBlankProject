@@ -1,23 +1,10 @@
-import { useState } from "react";
-import { Inputs } from "../constants/input";
 import { checkPassword, findUsername } from "../utils/validator.js";
 import { errorMessages } from "../constants/errormessages.jsx";
 import accounts from "../accounts.json";
 import Fields from "../components/Fields.jsx";
+import Button from "../components/Button.jsx";
 
-const Account = ({ user, setUser, onLogout }) => {
-  const [formState, setFormState] = useState(
-    Inputs.reduce(
-      (acc, input) => ({
-        ...acc,
-        [input.value]: {
-          value: input.value === "username" ? user : "",
-          error: "",
-        },
-      }),
-      {}
-    )
-  );
+const Account = ({ user, setUser, formState, setFormState, onLogout }) => {
   const handleUpdateDetails = (e) => {
     e.preventDefault();
     const username = formState.username.value;
@@ -46,6 +33,22 @@ const Account = ({ user, setUser, onLogout }) => {
       setUser(username);
     }
   };
+  const handleLogout = () => {
+    onLogout();
+    setFormState((prevState) => ({
+      ...prevState,
+      username: {
+        ...prevState.username,
+        value: "",
+        error: "",
+      },
+      password: {
+        ...prevState.password,
+        value: "",
+        error: "",
+      },
+    }));
+  };
 
   const handleChange = (value, inputValue) => {
     setFormState((prevState) => ({
@@ -63,12 +66,10 @@ const Account = ({ user, setUser, onLogout }) => {
       <form onSubmit={handleUpdateDetails}>
         <Fields formState={formState} setFormState={setFormState} />
         <div className="btn-wrapper">
-          <button type="submit" className="btn">
-            Update Details
-          </button>
-          <button type="button" className="btn logout" onClick={onLogout}>
+          <Button type="submit">Update Details</Button>
+          <Button type="button" className="logout" onClick={handleLogout}>
             Logout
-          </button>
+          </Button>
         </div>
       </form>
     </>
