@@ -1,11 +1,13 @@
-// import BxBxsError from "../icons/icons.js";
+import { BxBxsError } from "../icons/icons";
 
 const ErrorBox = ({ message }) => {
-  if (!message) return null;
+  if (!message) return <div className="vSpacer33"></div>;
   return (
     <>
       <div className="error-message">
-        {/* <BxBxsError /> */}
+        <div>
+          <BxBxsError />
+        </div>
         {message}
       </div>
     </>
