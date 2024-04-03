@@ -3,30 +3,54 @@ import { errorMessages } from "../constants/errormessages";
 import { useState } from "react";
 import ErrorBox from "../components/error.jsx";
 
-const Login = () => {
+const ACCOUNTS_ENDPOINT = "/src/accounts.json";
+
+const Login = ({ onLogin }) => {
   const [formState, setFormState] = useState(
     Inputs.reduce(
       (acc, input) => ({ ...acc, [input.value]: { value: "", error: "" } }),
-      {},
-    ),
+      {}
+    )
   );
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setFormState((prevState) => ({
-      ...prevState,
-      username: { ...prevState.username, error: errorMessages.accountExists },
-      password: {
-        ...prevState.password,
-        error: errorMessages.invalidCredentials,
-      },
-    }));
+    fetch(ACCOUNTS_ENDPOINT)
+      .then((res) => res.json())
+      .then((accounts) => {
+        const isValid = accounts.some(
+          (account) =>
+            formState.username.value === account.username &&
+            formState.password.value === account.password
+        );
+        if (isValid) {
+          onLogin(formState.username.value);
+        } else {
+          const isUsernameValid = accounts.some(
+            (account) => formState.username.value === account.username
+          );
+          setFormState((prevState) => ({
+            ...prevState,
+            username: {
+              ...prevState.username,
+              error: isUsernameValid ? errorMessages.accountExists : "",
+            },
+            password: {
+              ...prevState.password,
+              error: !isUsernameValid ? errorMessages.invalidCredentials : "",
+            },
+          }));
+        }
+      });
   };
 
   const handleChange = (value, inputValue) => {
     setFormState((prevState) => ({
       ...prevState,
-      [value]: inputValue,
+      [value]: {
+        ...prevState[value],
+        value: inputValue,
+      },
     }));
   };
 
